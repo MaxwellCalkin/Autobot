@@ -1,0 +1,14 @@
+{
+  "id": null,
+  "title": null,
+  "description": null,
+  "created_at": null,
+  "status": "idle",
+  "priority": 1,
+  "tags": [],
+  "metadata": {
+    "estimated_hours": null,
+    "actual_hours": null,
+    "requestor": "user"
+  }
+}

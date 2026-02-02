@@ -1,0 +1,1 @@
+"""Autobot template files."""

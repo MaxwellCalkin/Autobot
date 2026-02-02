@@ -1,0 +1,9 @@
+[project]
+name = "autobot-hooks"
+version = "0.1.0"
+description = "Autobot hooks for Claude Code autonomous development"
+requires-python = ">=3.10"
+
+[tool.uv]
+# Uncomment to pin a specific Python version
+# python = "3.12"

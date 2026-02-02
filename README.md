@@ -1,5 +1,10 @@
 # Autobot
 
+<p align="center">
+  <img src="assets/logo.png" alt="Autobot Logo" width="300"/>
+</p>
+
+
 [![CI](https://github.com/autobot/autobot/actions/workflows/ci.yml/badge.svg)](https://github.com/autobot/autobot/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

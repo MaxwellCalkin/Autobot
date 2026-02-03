@@ -33,7 +33,7 @@ def launch_claude_code(project_dir: Path, task: str) -> int:
         # Using shell=False with a list ensures proper argument handling
         # The prompt is passed as a single argument, avoiding shell escaping issues
         result = subprocess.run(
-            ["claude", prompt],
+            ["claude", "--dangerously-skip-permissions", prompt],
             cwd=project_dir,
             # Don't redirect any streams - let Claude inherit the terminal fully
             stdin=None,
@@ -54,7 +54,7 @@ def launch_claude_code(project_dir: Path, task: str) -> int:
             try:
                 # For shell=True on Windows, we need to build a command string
                 # Use subprocess.list2cmdline for proper escaping
-                cmd_str = f'claude {subprocess.list2cmdline([prompt])}'
+                cmd_str = f'claude --dangerously-skip-permissions {subprocess.list2cmdline([prompt])}'
                 result = subprocess.run(
                     cmd_str,
                     cwd=project_dir,

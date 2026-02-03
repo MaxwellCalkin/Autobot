@@ -30,11 +30,41 @@ class TestNoArgs:
     """Tests for CLI with no arguments."""
 
     def test_no_args_shows_help(self):
-        """No arguments shows help text (exits with code 2 per Typer convention)."""
+        """No arguments shows help text (exit code 2 per Typer convention)."""
         result = runner.invoke(app, [])
-        # Typer's no_args_is_help=True returns exit code 2
         assert result.exit_code == 2
         assert "autobot" in result.output.lower()
+
+
+class TestPositionalTaskShorthand:
+    """Tests for 'autobot <task>' shorthand syntax."""
+
+    def test_preprocess_args_inserts_start(self):
+        """preprocess_args inserts 'start' for unknown first arg."""
+        import sys
+        from autobot.cli import preprocess_args
+
+        # Save original argv
+        original_argv = sys.argv.copy()
+
+        try:
+            # Test: task argument gets 'start' prepended
+            sys.argv = ["autobot", "Build a feature"]
+            preprocess_args()
+            assert sys.argv == ["autobot", "start", "Build a feature"]
+
+            # Test: known command is not modified
+            sys.argv = ["autobot", "status"]
+            preprocess_args()
+            assert sys.argv == ["autobot", "status"]
+
+            # Test: flags are not modified
+            sys.argv = ["autobot", "--version"]
+            preprocess_args()
+            assert sys.argv == ["autobot", "--version"]
+        finally:
+            # Restore original argv
+            sys.argv = original_argv
 
 
 class TestStatus:
@@ -145,3 +175,48 @@ class TestStart:
         assert (temp_project / ".claude").exists()
         assert (temp_project / ".autobot").exists()
         assert "--no-launch specified" in result.output
+
+    def test_start_prompts_reset_when_autobot_exists(
+        self, temp_project, mock_autobot_dir, monkeypatch
+    ):
+        """Prompts to reset state when .autobot/ exists."""
+        monkeypatch.chdir(temp_project)
+        # Write some content to task.json that would be overwritten
+        (mock_autobot_dir / "task.json").write_text(
+            '{"id": "old-task", "status": "idle"}', encoding="utf-8"
+        )
+
+        # Say yes to reset, use --no-launch
+        result = runner.invoke(app, ["start", "New task", "--no-launch"], input="y\n")
+        assert result.exit_code == 0
+
+        # task.json should be reset (overwritten with template)
+        task_content = (mock_autobot_dir / "task.json").read_text(encoding="utf-8")
+        assert "old-task" not in task_content
+
+    def test_start_aborts_when_reset_declined(
+        self, temp_project, mock_autobot_dir, monkeypatch
+    ):
+        """Aborts when user declines to reset state."""
+        monkeypatch.chdir(temp_project)
+        # Say no to reset
+        result = runner.invoke(app, ["start", "New task", "--no-launch"], input="n\n")
+        assert result.exit_code == 1
+
+    def test_start_force_skips_prompts(
+        self, temp_project, mock_autobot_dir, monkeypatch
+    ):
+        """--force skips all confirmation prompts."""
+        monkeypatch.chdir(temp_project)
+        # Write some content that would be overwritten
+        (mock_autobot_dir / "task.json").write_text(
+            '{"id": "old-task", "status": "idle"}', encoding="utf-8"
+        )
+
+        # Use --force, should not prompt
+        result = runner.invoke(app, ["start", "New task", "--no-launch", "--force"])
+        assert result.exit_code == 0
+
+        # task.json should be overwritten
+        task_content = (mock_autobot_dir / "task.json").read_text(encoding="utf-8")
+        assert "old-task" not in task_content

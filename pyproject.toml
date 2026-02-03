@@ -26,7 +26,7 @@ dependencies = [
 ]
 
 [project.scripts]
-autobot = "autobot.cli:app"
+autobot = "autobot.cli:cli"
 
 [project.urls]
 Homepage = "https://github.com/autobot/autobot"

@@ -4,7 +4,22 @@
       "Bash(autobot --help:*)",
       "Bash(uv run ruff:*)",
       "Bash(uv run mypy:*)",
-      "Bash(uv run pytest:*)"
+      "Bash(uv run pytest:*)",
+      "Bash(dir:*)",
+      "Bash(uv run autobot --help:*)",
+      "Bash(python -c \"from autobot.cli import preprocess_args; import sys; sys.argv=[''autobot'',''Build a thing'']; preprocess_args\\(\\); print\\(sys.argv\\)\")",
+      "Bash(pip show:*)",
+      "Bash(findstr:*)",
+      "Bash(del \"C:\\\\Users\\\\MaxCalkin\\\\AppData\\\\Roaming\\\\pypoetry\\\\venv\\\\Scripts\\\\autobot.exe\")",
+      "Bash(pip install:*)",
+      "Bash(where:*)",
+      "Bash(uv pip show:*)",
+      "Bash(uv pip install:*)",
+      "Bash(\"c:\\\\code\\\\Projects\\\\Autobot\\\\.venv\\\\Scripts\\\\python.exe\" -c \"from autobot.cli import cli; print\\(''import works''\\)\")",
+      "Bash(del /f \"C:\\\\Users\\\\MaxCalkin\\\\AppData\\\\Roaming\\\\pypoetry\\\\venv\\\\Scripts\\\\autobot.exe\")",
+      "Bash(cmd /c del /f \"C:\\\\Users\\\\MaxCalkin\\\\AppData\\\\Roaming\\\\pypoetry\\\\venv\\\\Scripts\\\\autobot.exe\")",
+      "Bash(uv tool install:*)",
+      "Bash(autobot:*)"
     ]
   }
 }

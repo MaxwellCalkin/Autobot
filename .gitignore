@@ -45,6 +45,9 @@ coverage.xml
 # Type checking
 .mypy_cache/
 
+# Linting
+.ruff_cache/
+
 # Distribution
 *.tar.gz
 *.whl

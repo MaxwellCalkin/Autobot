@@ -36,9 +36,8 @@ def version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
-@app.callback(invoke_without_command=True)
+@app.callback()
 def main(
-    ctx: typer.Context,
     version: bool = typer.Option(
         None, "--version", "-v",
         callback=version_callback,
@@ -52,12 +51,22 @@ def main(
     [bold]Example:[/bold]
         autobot "Build a login system with OAuth support"
     """
-    # If a subcommand was invoked, let it handle things
-    if ctx.invoked_subcommand is not None:
-        return
+    pass
 
-    # No subcommand - show help
-    console.print(ctx.get_help())
+
+def preprocess_args() -> None:
+    """Preprocess sys.argv to support 'autobot <task>' shorthand.
+
+    If the first argument isn't a known subcommand or flag, insert 'start'
+    so that 'autobot "my task"' becomes 'autobot start "my task"'.
+    """
+    known_commands = {"start", "run", "init", "status", "clean"}
+
+    if len(sys.argv) > 1:
+        first_arg = sys.argv[1]
+        # If it's not a flag and not a known command, treat it as a task
+        if not first_arg.startswith("-") and first_arg not in known_commands:
+            sys.argv.insert(1, "start")
 
 
 @app.command("run", hidden=True)
@@ -116,8 +125,19 @@ def start(
         console.print("  • Run with [bold]--force[/bold] to overwrite")
         raise typer.Exit(1)
 
-    if (claude_exists or autobot_exists) and not force and not dry_run:
-        console.print("[yellow]Existing configuration found.[/yellow]")
+    # Track whether to reset .autobot/ state
+    reset_autobot = False
+
+    # If .autobot/ exists (but no active task), prompt to reset state
+    if autobot_exists and not force and not dry_run:
+        console.print("[yellow]Existing .autobot/ state found.[/yellow]")
+        if not typer.confirm("Reset state for new task?"):
+            raise typer.Exit(1)
+        reset_autobot = True
+
+    # If only .claude/ exists (no .autobot/), just ask about merging
+    if claude_exists and not autobot_exists and not force and not dry_run:
+        console.print("[yellow]Existing .claude/ configuration found.[/yellow]")
         if not typer.confirm("Merge Autobot into existing project?"):
             raise typer.Exit(1)
 
@@ -138,7 +158,7 @@ def start(
     # Scaffold the project
     console.print("[bold]Scaffolding project...[/bold]")
     try:
-        created_files = scaffold_project(project_dir, force=force)
+        created_files = scaffold_project(project_dir, force=force, reset_autobot=reset_autobot)
         console.print(f"{CHECK} Created {len(created_files)} files")
     except Exception as e:
         console.print(f"[red]Error scaffolding project:[/red] {e}")
@@ -319,5 +339,11 @@ def clean(
     console.print("[green]Cleanup complete.[/green]")
 
 
-if __name__ == "__main__":
+def cli() -> None:
+    """Main entry point that supports 'autobot <task>' shorthand."""
+    preprocess_args()
     app()
+
+
+if __name__ == "__main__":
+    cli()

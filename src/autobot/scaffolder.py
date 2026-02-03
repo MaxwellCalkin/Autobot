@@ -1,9 +1,14 @@
 """Scaffolder - Copy template files to target project."""
 
 import json
+import sys
 from importlib import resources
-from importlib.abc import Traversable
 from pathlib import Path
+
+if sys.version_info >= (3, 12):
+    from importlib.resources.abc import Traversable
+else:
+    from importlib.abc import Traversable
 
 
 def check_existing_state(project_dir: Path) -> tuple[bool, bool, dict | None]:
@@ -32,12 +37,17 @@ def check_existing_state(project_dir: Path) -> tuple[bool, bool, dict | None]:
     return claude_exists, autobot_exists, active_task
 
 
-def scaffold_project(project_dir: Path, force: bool = False) -> list[str]:
+def scaffold_project(
+    project_dir: Path,
+    force: bool = False,
+    reset_autobot: bool = False,
+) -> list[str]:
     """Copy all templates to the target project directory.
 
     Args:
         project_dir: Target directory to scaffold
-        force: If True, overwrite existing files
+        force: If True, overwrite all existing files
+        reset_autobot: If True, overwrite .autobot/ files (for new tasks)
 
     Returns:
         List of created file paths (relative to project_dir)
@@ -47,18 +57,18 @@ def scaffold_project(project_dir: Path, force: bool = False) -> list[str]:
     # Get the templates directory from the package
     templates_path = resources.files("autobot.templates")
 
-    # Scaffold .claude/ directory
+    # Scaffold .claude/ directory (respects force flag)
     claude_source = templates_path.joinpath("claude")
     claude_dest = project_dir / ".claude"
     created_files.extend(
         _copy_template_tree(claude_source, claude_dest, project_dir, force)
     )
 
-    # Scaffold .autobot/ directory
+    # Scaffold .autobot/ directory (respects force OR reset_autobot flag)
     autobot_source = templates_path.joinpath("autobot")
     autobot_dest = project_dir / ".autobot"
     created_files.extend(
-        _copy_template_tree(autobot_source, autobot_dest, project_dir, force)
+        _copy_template_tree(autobot_source, autobot_dest, project_dir, force or reset_autobot)
     )
 
     # Copy CLAUDE.md to project root

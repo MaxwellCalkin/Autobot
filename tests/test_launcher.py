@@ -21,8 +21,9 @@ class TestLaunchClaudeCode:
         # First positional arg should be the command list
         cmd = call_args[0][0]
         assert cmd[0] == "claude"
-        assert "/init-task" in cmd[1]
-        assert "Build something" in cmd[1]
+        assert cmd[1] == "--dangerously-skip-permissions"
+        assert "/init-task" in cmd[2]
+        assert "Build something" in cmd[2]
 
     @patch("autobot.launcher.subprocess.run")
     def test_returns_claude_exit_code(self, mock_run, temp_project):
@@ -99,4 +100,4 @@ class TestLaunchClaudeCode:
         launch_claude_code(temp_project, task)
 
         cmd = mock_run.call_args[0][0]
-        assert task in cmd[1]
+        assert task in cmd[2]

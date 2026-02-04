@@ -31,7 +31,8 @@
       "Bash(npm bin:*)",
       "Bash(npm prefix:*)",
       "Bash(powershell -Command:*)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(git remote get-url:*)"
     ]
   }
 }

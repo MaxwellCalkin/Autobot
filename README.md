@@ -4,21 +4,22 @@
   <img src="assets/logo.png" alt="Autobot Logo" width="300"/>
 </p>
 
-
-[![CI](https://github.com/autobot/autobot/actions/workflows/ci.yml/badge.svg)](https://github.com/autobot/autobot/actions/workflows/ci.yml)
+[![CI](https://github.com/MaxwellCalkin/Autobot/actions/workflows/ci.yml/badge.svg)](https://github.com/MaxwellCalkin/Autobot/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/autobot-cli)](https://www.npmjs.com/package/autobot-cli)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Autonomous development assistant for Claude Code.
 
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) 18+
+- [Claude Code](https://claude.ai/code) (`npm install -g @anthropic-ai/claude-code`)
+
 ## Installation
 
 ```bash
-# Install globally from the repo
-npm install -g .
-
-# Or link for development
-npm link
+npm install -g autobot-cli
 ```
 
 ## Usage

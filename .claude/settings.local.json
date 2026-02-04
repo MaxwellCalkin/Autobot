@@ -30,7 +30,8 @@
       "Bash(npm ls:*)",
       "Bash(npm bin:*)",
       "Bash(npm prefix:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(npm view:*)"
     ]
   }
 }

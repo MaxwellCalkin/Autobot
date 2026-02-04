@@ -7,12 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Initial public release preparation
-- Test suite with pytest
-- CI/CD with GitHub Actions
-- Code quality tooling (ruff, mypy)
-- Contributing guidelines
+### Changed
+- Migrated from Python to Node.js for easier portability (no Python environment needed)
+- Hooks rewritten from Python to JavaScript
+- Test suite migrated from pytest to Vitest
 
 ## [0.1.0] - 2024
 

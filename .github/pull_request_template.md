@@ -12,9 +12,8 @@
 
 <!-- How did you test these changes? -->
 
-- [ ] Tests pass locally (`uv run pytest`)
-- [ ] Linting passes (`uv run ruff check src tests`)
-- [ ] Type checking passes (`uv run mypy src`)
+- [ ] Tests pass locally (`npm test`)
+- [ ] No linting errors
 
 ## Checklist
 

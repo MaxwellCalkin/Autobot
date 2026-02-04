@@ -5,13 +5,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What is Autobot?
 
 Autobot enables Claude Code to autonomously complete long-running development tasks by:
-1. **Decomposing** large tasks into context-window-sized subtasks
-2. **Persisting** state and learnings across iterations
-3. **Enforcing** quality gates through hooks (tests must pass before continuing)
-4. **Recovering** gracefully from failures (pause after 3 consecutive failures)
+1. **Clarifying** requirements with the user before starting (ask when uncertain)
+2. **Decomposing** large tasks into context-window-sized subtasks
+3. **Persisting** state and learnings across iterations
+4. **Enforcing** quality gates through hooks (tests must pass before continuing)
+5. **Recovering** gracefully from failures (pause after 3 consecutive failures)
 
 ## Philosophy
 
+- **Understand before building** - Clarify ambiguous requirements with the user before starting work
 - **Tests are first-class citizens** - Write tests before implementation (TDD)
 - **Small, verifiable steps** - Each subtask must fit in one context window
 - **Quality gates are mandatory** - All tests must pass before marking complete
@@ -30,7 +32,7 @@ Autobot enables Claude Code to autonomously complete long-running development ta
 
 .claude/            # Claude Code customization
 ├── settings.json   # Hooks, permissions
-├── hooks/          # Python scripts for automation
+├── hooks/          # Node.js scripts for automation
 ├── agents/         # Specialized subagent definitions
 ├── commands/       # User-invoked slash commands
 └── skills/         # Auto-invoked capabilities
@@ -120,11 +122,23 @@ The autonomous loop stops when:
 4. 3+ consecutive test failures (requests human review)
 5. User runs `/pause` or `/abort`
 
+## Planning & Requirement Clarification
+
+The `/init-task` command performs planning **inline** (not via subagent) so it can interact with the user:
+
+1. Explores the codebase to understand patterns and architecture
+2. Analyzes the task for ambiguities, missing details, or architectural choices
+3. Uses `AskUserQuestion` to clarify uncertainties with the user (only when genuinely needed)
+4. Decomposes the task into subtasks using the clarified understanding
+5. Logs any clarifications received in `progress.md` for future reference
+
+This prevents the common problem of agentic coding drifting away from the user's vision during long-running autonomous work.
+
 ## Subagents
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| planner | Opus | Task decomposition |
+| planner | Opus | Task decomposition guidelines (used inline by init-task, or standalone) |
 | builder | Sonnet | Implementation with TDD |
 | reviewer | Sonnet | Code review |
 | fixer | Sonnet | Debug test failures |

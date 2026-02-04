@@ -10,18 +10,18 @@ Thank you for your interest in contributing to Autobot!
    cd autobot
    ```
 
-2. **Install uv** (recommended package manager)
+2. **Install Node.js** (18+ required)
 
-   See https://docs.astral.sh/uv/getting-started/installation/ for installation instructions.
+   See https://nodejs.org/ for installation instructions.
 
-3. **Create virtual environment and install dependencies**
+3. **Install dependencies**
    ```bash
-   uv sync --all-extras
+   npm install
    ```
 
 4. **Verify installation**
    ```bash
-   uv run autobot --version
+   node bin/autobot.js --version
    ```
 
 ## Development Workflow
@@ -30,37 +30,20 @@ Thank you for your interest in contributing to Autobot!
 
 ```bash
 # Run all tests
-uv run pytest
+npm test
 
 # Run with coverage
-uv run pytest --cov=src/autobot
+npm run test:coverage
 
-# Run specific test file
-uv run pytest tests/test_cli.py
-```
-
-### Code Quality
-
-```bash
-# Lint code
-uv run ruff check src tests
-
-# Auto-fix linting issues
-uv run ruff check src tests --fix
-
-# Format code
-uv run ruff format src tests
-
-# Type check
-uv run mypy src
+# Run in watch mode
+npm run test:watch
 ```
 
 ### Before Submitting
 
 1. Ensure all tests pass
-2. Run linting and fix any issues
-3. Add tests for new functionality
-4. Update documentation if needed
+2. Add tests for new functionality
+3. Update documentation if needed
 
 ## Pull Request Process
 
@@ -80,8 +63,7 @@ uv run mypy src
 ## Code Style
 
 - Follow existing code patterns in the codebase
-- Use type hints for function signatures
-- Write docstrings for public functions
+- Use ESM imports (`import`/`export`)
 - Keep functions focused and small
 
 ## Testing Guidelines
@@ -89,8 +71,8 @@ uv run mypy src
 - Write tests for new functionality
 - Follow TDD when possible (test first)
 - Use descriptive test names
-- Group related tests in classes
-- Use fixtures for common setup
+- Use Vitest for testing
+- Use setup/teardown helpers for common setup
 
 ## Questions?
 

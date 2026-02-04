@@ -6,6 +6,7 @@
       "Grep",
       "Bash(npm test:*)",
       "Bash(npm run lint:*)",
+      "Bash(npx vitest:*)",
       "Bash(pytest:*)",
       "Bash(cargo test:*)",
       "Bash(go test:*)",
@@ -14,7 +15,7 @@
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(mkdir:*)",
-      "Bash(uv run:*)"
+      "Bash(node:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
@@ -31,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run python .claude/hooks/session-context.py",
+            "command": "node .claude/hooks/session-context.js",
             "timeout": 10
           }
         ]
@@ -43,7 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run python .claude/hooks/post-edit-tests.py",
+            "command": "node .claude/hooks/post-edit-tests.js",
             "timeout": 300
           }
         ]
@@ -53,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run python .claude/hooks/progress-tracker.py",
+            "command": "node .claude/hooks/progress-tracker.js",
             "timeout": 10
           }
         ]
@@ -64,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run python .claude/hooks/stop-loop.py",
+            "command": "node .claude/hooks/stop-loop.js",
             "timeout": 30
           }
         ]

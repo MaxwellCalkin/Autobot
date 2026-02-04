@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hooks are Python scripts that execute automatically at specific points in the Claude Code workflow. They enable automation, quality enforcement, and the autonomous loop.
+Hooks are Node.js scripts that execute automatically at specific points in the Claude Code workflow. They enable automation, quality enforcement, and the autonomous loop.
 
 ## Hook Events
 
@@ -69,7 +69,7 @@ Hooks communicate via stdout JSON:
 
 ## Autobot Hooks
 
-### stop-loop.py
+### stop-loop.js
 
 **Event:** Stop
 
@@ -88,7 +88,7 @@ Hooks communicate via stdout JSON:
 - `max_iterations`: Safety limit (default: 50)
 - Failure threshold: 3 consecutive test failures
 
-### post-edit-tests.py
+### post-edit-tests.js
 
 **Event:** PostToolUse (matcher: Edit|Write)
 
@@ -108,7 +108,7 @@ Hooks communicate via stdout JSON:
 - Rust: `cargo test`
 - Go: `go test ./...`
 
-### session-context.py
+### session-context.js
 
 **Event:** SessionStart
 
@@ -129,7 +129,7 @@ ITERATION: 12/50
 CURRENT: Implement OAuth providers
 ```
 
-### progress-tracker.py
+### progress-tracker.js
 
 **Event:** PostToolUse (matcher: Bash)
 
@@ -150,7 +150,7 @@ CURRENT: Implement OAuth providers
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-context.py\"",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-context.js\"",
             "timeout": 10
           }
         ]
@@ -162,7 +162,7 @@ CURRENT: Implement OAuth providers
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-tests.py\"",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-tests.js\"",
             "timeout": 300
           }
         ]
@@ -173,7 +173,7 @@ CURRENT: Implement OAuth providers
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-loop.py\"",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-loop.js\"",
             "timeout": 30
           }
         ]
@@ -187,24 +187,27 @@ CURRENT: Implement OAuth providers
 
 ### Change Test Command
 
-Edit `post-edit-tests.py`:
+Edit `post-edit-tests.js`:
 
-```python
-def detect_test_command(project_dir: Path) -> list[str] | None:
-    # Add your custom detection logic
-    if (project_dir / 'custom-test-config.json').exists():
-        return ['custom-test-runner', '--fast']
-    # ... existing logic
+```javascript
+function detectTestCommand(projectDir) {
+  // Add your custom detection logic
+  if (fs.existsSync(path.join(projectDir, 'custom-test-config.json'))) {
+    return ['custom-test-runner', '--fast'];
+  }
+  // ... existing logic
+}
 ```
 
 ### Change Failure Threshold
 
-Edit `stop-loop.py`:
+Edit `stop-loop.js`:
 
-```python
-# Change from 3 to 5 consecutive failures
-if consecutive_failures >= 5:
-    # ... pause logic
+```javascript
+// Change from 3 to 5 consecutive failures
+if (consecutiveFailures >= 5) {
+  // ... pause logic
+}
 ```
 
 ### Add Pre-Commit Hook
@@ -220,7 +223,7 @@ Add to `settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-command.py\"",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-command.js\"",
             "timeout": 5
           }
         ]
@@ -241,7 +244,7 @@ Run Claude Code with `--debug` flag to see hook execution.
 Test hooks directly:
 
 ```bash
-echo '{"tool_name": "Write", "tool_input": {"file_path": "test.ts"}}' | python .claude/hooks/post-edit-tests.py
+echo '{"tool_name": "Write", "tool_input": {"file_path": "test.ts"}}' | node .claude/hooks/post-edit-tests.js
 ```
 
 ### Check Hook Logs
@@ -249,7 +252,7 @@ echo '{"tool_name": "Write", "tool_input": {"file_path": "test.ts"}}' | python .
 Hooks write observations to `.autobot/observations.jsonl`:
 
 ```bash
-python .claude/hooks/analyze-observations.py --recent 10
+node .claude/hooks/analyze-observations.js --recent 10
 ```
 
 ## Troubleshooting
@@ -257,14 +260,14 @@ python .claude/hooks/analyze-observations.py --recent 10
 ### Hook Not Running
 
 1. Check `settings.json` syntax
-2. Verify Python is available in PATH
+2. Verify Node.js is available in PATH
 3. Check file permissions
 4. Look for errors in Claude Code output
 
 ### Tests Not Running
 
 1. Verify test framework is installed
-2. Check `detect_test_command()` logic
+2. Check `detectTestCommand()` logic
 3. Test command manually first
 
 ### Loop Not Continuing

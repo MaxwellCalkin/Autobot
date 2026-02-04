@@ -1,6 +1,6 @@
 # Initialize Autobot Task
 
-Start a new autonomous development task with automatic decomposition and execution.
+Start a new autonomous development task with inline planning, requirement clarification, and execution.
 
 ## Arguments
 
@@ -10,10 +10,12 @@ $ARGUMENTS - The task description (required)
 
 1. **Validate** - Ensure no active task is running
 2. **Create Task** - Initialize `.autobot/task.json` with the description
-3. **Decompose** - Use the planner subagent to break into subtasks
-4. **Save Plan** - Write subtasks to `.autobot/plan.json`
-5. **Initialize Metrics** - Reset `.autobot/metrics.json`
-6. **Begin Work** - Start on the first subtask
+3. **Explore** - Read the codebase to understand architecture and patterns
+4. **Clarify** - Identify ambiguities or uncertainties and ask the user using `AskUserQuestion`
+5. **Decompose** - Break into subtasks using the clarified understanding
+6. **Save Plan** - Write subtasks to `.autobot/plan.json`
+7. **Initialize Metrics** - Reset `.autobot/metrics.json`
+8. **Begin Work** - Start on the first subtask
 
 ## Example Usage
 
@@ -26,7 +28,7 @@ $ARGUMENTS - The task description (required)
 When this command is invoked:
 
 1. Check if there's already an active task:
-   ```python
+   ```javascript
    task = load_json('.autobot/task.json')
    if task.get('status') == 'in_progress':
        # Warn user and ask to /abort first
@@ -43,14 +45,75 @@ When this command is invoked:
    }
    ```
 
-3. Use the planner subagent to decompose:
-   ```
-   /task planner "Decompose this task into subtasks: $ARGUMENTS"
+3. **Explore the codebase yourself** (do NOT delegate to a subagent):
+   - Use `Glob` to discover the project structure
+   - Use `Read` to understand key files, patterns, and conventions
+   - Use `Grep` to find relevant code areas
+   - Identify what already exists vs. what needs to be built
+
+4. **Identify uncertainties and clarify with the user:**
+
+   After exploring the codebase and analyzing the task description, determine if there are any:
+   - **Ambiguous requirements** - The task description could be interpreted multiple ways
+   - **Missing details** - Important decisions that the user hasn't specified
+   - **Conflicting constraints** - Requirements that seem to conflict with each other or existing code
+   - **Architectural choices** - Multiple valid approaches where user preference matters
+   - **Scope boundaries** - Unclear what's in vs. out of scope
+
+   If ANY uncertainties exist, use the `AskUserQuestion` tool to ask the user before proceeding. Structure questions to be specific and actionable - present concrete options where possible rather than open-ended questions.
+
+   **Examples of good clarifying questions:**
+   - "The task mentions 'authentication' - should this use JWT tokens or session-based auth?"
+   - "I see the codebase uses both REST and GraphQL. Which should the new endpoint use?"
+   - "Should error messages be user-facing (friendly) or developer-facing (detailed)?"
+
+   **Do NOT ask about:**
+   - Implementation details you can decide yourself (variable names, file organization)
+   - Things that are clearly specified in the task description
+   - Standard best practices (testing, error handling) unless there's a genuine trade-off
+
+   If the task description is sufficiently clear and unambiguous, skip this step and proceed directly to decomposition.
+
+5. **Decompose into subtasks** using the planning guidelines from `.claude/agents/planner.md`:
+
+   Apply the decomposition guidelines:
+   - Maximum 5-7 subtasks per task
+   - Each subtask fits within a single context window
+   - Each subtask is independently verifiable with tests
+   - Order by dependencies (foundational work first)
+   - Always include a test-writing phase for new features
+   - Final subtask should be integration verification
+   - If unsure about scope, err on smaller subtasks
+
+   Generate the plan as a JSON structure:
+   ```json
+   {
+     "task_id": "task-{timestamp}",
+     "version": 1,
+     "created_at": "ISO timestamp",
+     "updated_at": "ISO timestamp",
+     "subtasks": [
+       {
+         "id": "st-001",
+         "title": "Short descriptive title",
+         "description": "Detailed description of what to implement",
+         "files": ["paths/to/files/to/modify"],
+         "tests": ["describe what tests to write"],
+         "acceptance_criteria": [
+           "Specific, verifiable criterion 1",
+           "Specific, verifiable criterion 2"
+         ],
+         "dependencies": [],
+         "complexity": "small|medium|large",
+         "status": "pending"
+       }
+     ]
+   }
    ```
 
-4. Save the plan returned by planner to `.autobot/plan.json`
+6. Save the plan to `.autobot/plan.json`
 
-5. Reset metrics:
+7. Reset metrics:
    ```json
    {
      "current_iteration": 0,
@@ -63,19 +126,22 @@ When this command is invoked:
    }
    ```
 
-6. Log to progress.md:
+8. Log to progress.md:
    ```markdown
    ## Task Started: {timestamp}
    **Title:** {title}
    **Subtasks:** {count}
+   **Clarifications:** {summary of any questions asked and answers received, or "None needed"}
 
    ---
    ```
 
-7. Begin working on the first subtask immediately
+9. Begin working on the first subtask immediately
 
 ## Notes
 
+- Planning happens inline (NOT via subagent) so the agent can ask the user questions
+- The agent should only ask questions when genuinely uncertain - not as a formality
 - The autonomous loop (Stop hook) will take over after initialization
 - Progress is automatically tracked in `.autobot/`
 - Use `/status` to check progress at any time

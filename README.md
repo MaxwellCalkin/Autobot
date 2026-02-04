@@ -6,7 +6,7 @@
 
 
 [![CI](https://github.com/autobot/autobot/actions/workflows/ci.yml/badge.svg)](https://github.com/autobot/autobot/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Autonomous development assistant for Claude Code.
@@ -14,14 +14,11 @@ Autonomous development assistant for Claude Code.
 ## Installation
 
 ```bash
-# Using uv (recommended)
-uv tool install autobot
+# Install globally from the repo
+npm install -g .
 
-# Using pip
-pip install autobot
-
-# Using pipx
-pipx install autobot
+# Or link for development
+npm link
 ```
 
 ## Usage

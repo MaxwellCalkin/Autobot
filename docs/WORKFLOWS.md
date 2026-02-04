@@ -278,13 +278,13 @@ Used when tests fail repeatedly:
 
 ```bash
 # Find test failure patterns
-python .claude/hooks/analyze-observations.py --type test_failure
+node .claude/hooks/analyze-observations.js --type test_failure
 
 # Find learned patterns
-python .claude/hooks/analyze-observations.py --type pattern
+node .claude/hooks/analyze-observations.js --type pattern
 
 # Get summary
-python .claude/hooks/analyze-observations.py --summary
+node .claude/hooks/analyze-observations.js --summary
 ```
 
 ### Progress Log

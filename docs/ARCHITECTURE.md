@@ -110,10 +110,10 @@ Large tasks are broken into context-window-sized subtasks:
 
 | Hook | Trigger | Purpose |
 |------|---------|---------|
-| `stop-loop.py` | Stop event | Autonomous continuation |
-| `post-edit-tests.py` | After Edit/Write | Run tests, track failures |
-| `session-context.py` | Session start | Load current state |
-| `progress-tracker.py` | After Bash | Track activity |
+| `stop-loop.js` | Stop event | Autonomous continuation |
+| `post-edit-tests.js` | After Edit/Write | Run tests, track failures |
+| `session-context.js` | Session start | Load current state |
+| `progress-tracker.js` | After Bash | Track activity |
 
 ### Subagents
 
@@ -240,4 +240,4 @@ The loop terminates when any of these conditions are met:
 1. **Max Iterations** - `.autobot/metrics.json` → `max_iterations`
 2. **Test Command** - Auto-detected, or customize hooks
 3. **Subagent Models** - Edit agent .md files
-4. **Quality Thresholds** - Edit hook Python scripts
+4. **Quality Thresholds** - Edit hook scripts

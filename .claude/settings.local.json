@@ -19,7 +19,18 @@
       "Bash(del /f \"C:\\\\Users\\\\MaxCalkin\\\\AppData\\\\Roaming\\\\pypoetry\\\\venv\\\\Scripts\\\\autobot.exe\")",
       "Bash(cmd /c del /f \"C:\\\\Users\\\\MaxCalkin\\\\AppData\\\\Roaming\\\\pypoetry\\\\venv\\\\Scripts\\\\autobot.exe\")",
       "Bash(uv tool install:*)",
-      "Bash(autobot:*)"
+      "Bash(autobot:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Read(//c/code/Projects/Autobot/.claude/**)",
+      "Bash(npm install:*)",
+      "Bash(npx vitest:*)",
+      "Bash(node:*)",
+      "Bash(wc:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm bin:*)",
+      "Bash(npm prefix:*)",
+      "Bash(powershell -Command:*)"
     ]
   }
 }
